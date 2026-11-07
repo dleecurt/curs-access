@@ -1,0 +1,157 @@
+.\" curs-access.1 - manual page for Curses Access
+.\" Copyright (C) 2026 Lee Curtis
+.\" This file is free software; see COPYING (GNU GPL v3 or later).
+.TH CURS-ACCESS 1 "November 2026" "Curses Access 0.0.2" "User Commands"
+.SH NAME
+curs-access \- lettered menu launcher for the terminal
+.SH SYNOPSIS
+.B curs-access
+[\fIOPTION\fR]...
+.SH DESCRIPTION
+.B curs-access
+shows a full-screen menu of up to 26 entries, lettered A to Z.
+Each entry runs a program, through
+.BR sh (1)
+in its own working directory, or opens a sub-menu.
+Sub-menus can be up to six levels deep.
+When a program ends, the menu comes back.
+.PP
+Every screen follows the size of the terminal; the smallest supported
+size is 64 columns by 20 lines.
+.SH OPTIONS
+.TP
+.BR \-n ", " \-\-no\-splash
+Do not show the start-up logo.
+.TP
+.BR \-r ", " \-\-recover
+Ask for the recovery code at start-up. If the code is right, the Exit and
+Menu Maintenance passwords are removed.
+.TP
+.B \-\-reset\-security
+Start over after confirming on the terminal: removes all passwords, makes
+a new recovery code and deletes the encrypted usage log. Menus and
+settings are kept.
+.TP
+.BR \-d ", " \-\-debug
+Write a debug log to
+.IR ~/.local/state/curs-access/debug.log .
+The debug log never holds passwords, the recovery code or keys.
+.TP
+.BR \-h ", " \-\-help
+Show a short help text and exit.
+.TP
+.BR \-V ", " \-\-version
+Show the version and the encryption library in use, and exit.
+.SH KEYS
+.TP
+.B A\-Z
+Run the entry, or open the sub-menu.
+.TP
+.B Up, Down, Home, End, PgUp, PgDn, Enter
+Move the selection bar and choose.
+.TP
+.B Esc
+Go back to the previous menu, cancel a dialog or leave a screen.
+.TP
+.B F1
+Menu Maintenance (asks for its password if one is set).
+.TP
+.B F3
+System Info.
+.TP
+.B F5
+Show the logo.
+.TP
+.B F10
+Exit (asks for the Exit password if one is set). In a sub-menu, F10
+goes back to the main menu.
+.TP
+.B F4
+At an Exit or Maintenance password prompt: use the recovery code.
+.PP
+.B Esc
+followed by a digit (1\-9, 0) works as F1\-F10, for terminals that keep
+the function keys for themselves.
+.SH MENU MAINTENANCE
+.TP
+.B Create / Modify Main Menu
+Edit entries in a table of description, directory and command.
+Typing on a cell replaces it, and Enter edits it.
+F1 Insert, F2 Delete, F3 Move, F5 Custom Title, F7 Tree,
+F8 Options (pause after the program ends, entry password),
+F9 Sub-Menu (makes the entry a sub-menu, or opens it), Esc back,
+F10 back to the Maintenance menu.
+.TP
+.B Program Configuration
+Command to run on exit, greeting, passwords, usage tracking, clock
+display, 24-hour clock, menu border, screen blanking time, start-up logo,
+color theme and each color.
+Left and Right step through the values, and Enter changes a value.
+.TP
+.B Color Themes
+Choose a built-in or saved theme, or save the current colors as a theme.
+.TP
+.B Usage Report
+Decrypts and shows the usage log. F2 clears it.
+.TP
+.B Passwords & Recovery
+Change the Exit and Maintenance passwords, or make a new recovery code.
+.SH SIGNALS
+At the menu, ^C, ^\, ^Z and ^S/^Q are read as ordinary keys and do
+nothing, and SIGINT, SIGQUIT, SIGTSTP, SIGTERM and SIGTTOU are ignored.
+SIGHUP restores the terminal and exits.
+SIGKILL cannot be caught.
+.PP
+A program started from the menu runs in its own process group as the
+terminal's foreground job, with default signal handling, so ^C and ^\
+work in it as usual.
+It cannot be suspended: if ^Z stops it, the menu resumes it at once.
+.SH SECURITY
+Passwords and the recovery code are stored only as one-way hashes:
+Argon2id with libsodium, or scrypt with OpenSSL.
+Usage log entries are sealed to an X25519 public key.
+The matching secret key is stored twice, encrypted once with a key
+derived from the Maintenance password and once with a key derived from
+the recovery code.
+The recovery code is shown once, when the program first starts, and
+whenever a new code is made; it is never stored.
+.PP
+The passwords protect a shared terminal in the same way as the classic
+DOS menu systems did; they are not a sandbox against a user who has a shell.
+.SH FILES
+.TP
+.I ~/.config/curs-access/curs-access.conf
+Program Configuration.
+.TP
+.I ~/.config/curs-access/menus.conf
+The menus.
+.TP
+.I ~/.config/curs-access/security.conf
+Password and recovery hashes, usage log keys.
+.TP
+.I ~/.config/curs-access/themes/*.theme
+Saved color themes.
+.TP
+.I ~/.config/curs-access/logo.txt
+Optional custom start-up logo; each line is drawn in the next rainbow color.
+.TP
+.I ~/.local/state/curs-access/usage.log
+Encrypted usage log.
+.TP
+.I ~/.local/state/curs-access/debug.log
+Debug log, written only with \fB\-\-debug\fR.
+.PP
+.B $XDG_CONFIG_HOME
+and
+.B $XDG_STATE_HOME
+are respected when they are set.
+.SH ENVIRONMENT
+Programs started from the menu get
+.B CURS_ACCESS=1
+in their environment.
+.SH COPYRIGHT
+Copyright \(co 2026 Lee Curtis.
+License GPLv3+: GNU GPL version 3 or later <https://gnu.org/licenses/gpl.html>.
+.SH SEE ALSO
+.BR sh (1),
+.BR ncurses (3X)
