@@ -25,6 +25,7 @@
 typedef struct {
     char exit_cmd[512];     /* shell command run after "Exit" (may be empty) */
     char greeting[64];      /* text after "Good Morning..." */
+    int clear_before_run;   /* blank the screen before running a command */
     int usage_tracking;     /* write encrypted usage log entries */
     int clock;              /* date and time on the bottom border */
     int clock_24h;          /* 24-hour clock instead of am/pm */

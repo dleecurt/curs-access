@@ -23,6 +23,7 @@
 
 #include "config.h"
 
+
 #include <dirent.h>
 #include <errno.h>
 #include <signal.h>
@@ -40,6 +41,9 @@
 #include "ui.h"
 #include "usage.h"
 #include "util.h"
+
+/* Last: term.h defines macros (lines, columns...) that clash with names above. */
+#include <term.h>          /* tigetstr(), putp() */
 
 /* Ask for an entry's own password, if it has one.  1 = may run. */
 static int entry_password_ok(const item_t *it)
@@ -60,6 +64,23 @@ static int entry_password_ok(const item_t *it)
         ui_message(it->desc, "Incorrect password.");
     }
     return ok;
+}
+
+/*
+ * Blank the terminal's normal screen (the one programs run on, outside
+ * curses) with the terminal's own "clear" sequence from terminfo.
+ * Called after endwin(), so it does not touch the menu's screen.
+ */
+static void clear_terminal(void)
+{
+    char cap[] = "clear";
+    const char *cl = tigetstr(cap);
+
+    if (cl && cl != (char *)-1)
+        putp(cl);
+    else
+        fputs("\033[H\033[2J", stdout);    /* ANSI fallback */
+    fflush(stdout);
 }
 
 /*
@@ -202,7 +223,10 @@ void launch_item(const menu_t *m, const item_t *it)
     /* Hand the terminal back to the program. */
     def_prog_mode();
     endwin();
-    printf("\n");
+    if (g_prefs.clear_before_run)
+        clear_terminal();       /* hide the previous command's output */
+    else
+        printf("\n");
     fflush(stdout);
 
     start = time(NULL);

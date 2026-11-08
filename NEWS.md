@@ -1,5 +1,12 @@
 # Curses Access release notes
 
+## 0.0.3 (2026-11-08)
+
+- New **Clear Screen Before Commands** setting in Program Configuration
+  (default On). Each program starts on a blank screen, so the previous
+  command's output no longer shows. It uses the terminal's own `clear`
+  sequence from terminfo.
+
 ## 0.0.2 (2026-11-07)
 
 - **The menu can't be closed by accident.** At the menu, ^C, ^\, ^Z and

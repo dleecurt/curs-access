@@ -40,7 +40,7 @@ typedef struct {
     int which;          /* password: 0 exit, 1 maintenance; color: slot */
 } row_t;
 
-#define N_ROWS (11 + 1 + SLOT_COUNT)
+#define N_ROWS (12 + 1 + SLOT_COUNT)
 
 static int g_nrows;
 static row_t g_rows[N_ROWS];
@@ -56,6 +56,7 @@ static void build_rows(void)
     ROW(R_TEXT, "Greeting", g_prefs.greeting, sizeof g_prefs.greeting, 0);
     ROW(R_PASSWORD, "Password For 'Exit'", NULL, 0, 0);
     ROW(R_PASSWORD, "Password For 'Menu Maintenance'", NULL, 0, 1);
+    ROW(R_TOGGLE, "Clear Screen Before Commands", &g_prefs.clear_before_run, 0, 0);
     ROW(R_TOGGLE, "Usage Tracking", &g_prefs.usage_tracking, 0, 0);
     ROW(R_TOGGLE, "Clock Display", &g_prefs.clock, 0, 0);
     ROW(R_TOGGLE, "24-Hour Clock", &g_prefs.clock_24h, 0, 0);

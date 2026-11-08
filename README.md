@@ -36,6 +36,9 @@ size is 64 × 20.
 - **Color themes**: six built-in themes (Classic, Blue Screen, Monochrome,
   Amber, Green Screen, Midnight). Every color can be changed in Program
   Configuration, and you can save your own themes.
+- **Clean screen for each program**: with Clear Screen Before Commands
+  (Program Configuration, on by default), a program never starts with the
+  previous command's output still on the screen.
 - **Can't be closed by accident**: ^C, ^\, ^Z, ^S/^Q and a plain `kill`
   (SIGTERM) do nothing at the menu. Programs started from the menu still
   get ^C and ^\ as usual, but ^Z doesn't suspend them, because the menu

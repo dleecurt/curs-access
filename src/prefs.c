@@ -40,6 +40,7 @@ static void defaults(void)
 {
     memset(&g_prefs, 0, sizeof g_prefs);
     ca_strlcpy(g_prefs.greeting, "Please Enter Your Selection", sizeof g_prefs.greeting);
+    g_prefs.clear_before_run = 1;
     g_prefs.usage_tracking = 0;
     g_prefs.clock = 1;
     g_prefs.clock_24h = 0;
@@ -82,6 +83,8 @@ int prefs_load(void)
             ca_strlcpy(g_prefs.exit_cmd, val, sizeof g_prefs.exit_cmd);
         else if (!strcmp(key, "greeting"))
             ca_strlcpy(g_prefs.greeting, val, sizeof g_prefs.greeting);
+        else if (!strcmp(key, "clear_screen"))
+            g_prefs.clear_before_run = onoff(val);
         else if (!strcmp(key, "usage_tracking"))
             g_prefs.usage_tracking = onoff(val);
         else if (!strcmp(key, "clock"))
@@ -118,6 +121,7 @@ int prefs_save(void)
                  "# Edit with F1 Maintenance > Program Configuration.\n"
                  "exit_command = %s\n"
                  "greeting = %s\n"
+                 "clear_screen = %s\n"
                  "usage_tracking = %s\n"
                  "clock = %s\n"
                  "clock_24h = %s\n"
@@ -126,6 +130,7 @@ int prefs_save(void)
                  "splash = %s\n"
                  "theme = %s\n",
                  g_prefs.exit_cmd, g_prefs.greeting,
+                 g_prefs.clear_before_run ? "on" : "off",
                  g_prefs.usage_tracking ? "on" : "off",
                  g_prefs.clock ? "on" : "off",
                  g_prefs.clock_24h ? "on" : "off",

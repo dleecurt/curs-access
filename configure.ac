@@ -3,7 +3,7 @@ dnl Copyright (C) 2026 Lee Curtis
 dnl This file is free software; see COPYING (GNU GPL v3 or later).
 
 AC_PREREQ([2.69])
-AC_INIT([Curses Access], [0.0.2], [], [curs-access])
+AC_INIT([Curses Access], [0.0.3], [], [curs-access])
 AC_CONFIG_SRCDIR([src/main.c])
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_AUX_DIR([build-aux])
